@@ -43,7 +43,7 @@ static void _require_str(int fd, const char* str) {
 static uint32_t _read_4(int fd) {
     uint32_t val;
     int ret;
-    if ((ret = read(fd, &val, sizeof(val))) == -1 || ret != sizeof(val))
+    if ((ret = read(fd, &val, sizeof(val))) == -1)
         errno_exit(ERRMSG_GENERIC);
     if (ret != sizeof(val)) error_exit(EINVAL, ERRMSG_GENERIC);
 
@@ -59,7 +59,7 @@ static uint32_t _read_4(int fd) {
 static uint16_t _read_2(int fd) {
     uint16_t val;
     int ret;
-    if ((ret = read(fd, &val, sizeof(val))) == -1 || ret != sizeof(val))
+    if ((ret = read(fd, &val, sizeof(val))) == -1)
         errno_exit(ERRMSG_GENERIC);
     if (ret != sizeof(val)) error_exit(EINVAL, ERRMSG_GENERIC);
 
