@@ -1,12 +1,12 @@
 # XWiv
 XWiv is a small program for visualising sound in various ways
-using Xlib.
-It uses the Open Sound System (OSS) as a playback backend.
+using Xlib.  
+It uses the Open Sound System (OSS) as a playback backend.  
 So far only tested on FreeBSD.
 
-![Example screenshot 1](screenshot1.png)
 ![Example screenshot 2](screenshot2.png)
 ![Example screenshot 3](screenshot3.png)
+![Example screenshot 1](screenshot1.png)
 
 ## Compilation
 The only build dependency is Xlib.
