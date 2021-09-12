@@ -1,0 +1,4 @@
+Fourier transfrom visualisation
+Visualisation should take into account BOTH channels, not just left
+Help display
+More formats
