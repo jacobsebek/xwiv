@@ -2,7 +2,7 @@
 XWiv is a small program for visualising sound in various ways
 using Xlib.  
 It uses the Open Sound System (OSS) as a playback backend.  
-So far only tested on FreeBSD.
+Tested on FreeBSD and Linux ([See linux details](#linux))
 
 ![Example screenshot 2](screenshot2.png)
 ![Example screenshot 3](screenshot3.png)
@@ -45,3 +45,10 @@ xwiv -m wave ~/music/track.wav
 ```
 ffmpeg -f oss -channels 2 -sample_rate 48000 -i /dev/dsp -f s16le - | xwiv -r 48000 -f s16le -c 2 -v 0 -m bars2 -
 ```
+
+## Linux
+If you're lucky, you'll be able to run XWiv on Linux without any issues using `aoss`, 
+the ALSA OSS binary compatibility layer (package `alsa-oss`). You can do so
+by just prefixing the XWiv command with `aoss`, e.g. `aoss xwiv -m wave ~/music/track.wav`.
+XWiv wasn't made wth Linux in mind, but there is an effort to keep it at least somewhat 
+functional, even though some features might be missing.

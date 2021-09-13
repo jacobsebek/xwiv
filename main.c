@@ -25,6 +25,11 @@ https://github.com/gavv/snippets/blob/master/xlib/xlib_hello.c
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+// OSSv4 feature, not supported by the anicent linux header.
+#ifdef SNDCTL_DSP_SETPLAYVOL
+    #define VOLUME_SUPPORTED
+#endif
+
 extern void parse_wav(int fd, int* sample_rate, int* num_channels, int* format);
 
 int chunk_size;
@@ -78,9 +83,13 @@ static void _parse_cmdline(int argc, char *argv[]) {
                 error_exit(EINVAL, "Invalid audio format");
         break;
         case 'v': // Volume
+        #ifdef VOLUME_SUPPORTED
             volume = strtol(optarg, NULL, 0);
             if (errno == EINVAL || errno == ERANGE) errno_exit("Invalid volume");
             if (volume > 100 || volume < 0) error_exit(EINVAL, "Volume outside of range");
+        #else
+            error_exit(EINVAL, "Volume setting not supported");
+        #endif
         break;
         case 'm': // Visualisation method
             if (!strcmp(optarg, "wave"))
@@ -133,15 +142,17 @@ static void _oss_setopt(int fd, unsigned long request, int val, const char* errm
 
 static void _oss_init() {
     playback_fd = open("/dev/dsp", O_WRONLY);
-    if (playback_fd == -1) errno_exit("Failed to open audio device");
+    if (playback_fd == -1) errno_exit("Failed to open default OSS audio device");
 
     _oss_setopt(playback_fd, SNDCTL_DSP_SETFMT, format, "Failed to set audio device format");
     _oss_setopt(playback_fd, SNDCTL_DSP_CHANNELS, num_channels, "Failed to set audio device channel count");
     _oss_setopt(playback_fd, SNDCTL_DSP_SPEED, sample_rate, "Failed to set audio device sample rate");
 
-    int volume_channels = 0;
-    for (char* b = (char*)&volume_channels; b-(char*)&volume_channels < sizeof(int); *b++ |= (char)volume);
-    _oss_setopt(playback_fd, SNDCTL_DSP_SETPLAYVOL, volume_channels, "Failed to set volume");
+    #ifdef VOLUME_SUPPORTED
+        int volume_channels = 0;
+        for (char* b = (char*)&volume_channels; b-(char*)&volume_channels < sizeof(int); *b++ |= (char)volume);
+        _oss_setopt(playback_fd, SNDCTL_DSP_SETPLAYVOL, volume_channels, "Failed to set volume");
+    #endif
 }
 
 static void _xlib_init() {
